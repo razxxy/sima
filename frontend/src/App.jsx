@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -9,31 +10,26 @@ import PerusahaanList from './pages/PerusahaanList';
 import PerusahaanForm from './pages/PerusahaanForm';
 import LaporanList from './pages/LaporanList';
 import Profile from './pages/Profile';
-import Layout from './components/Layout';
-import ProtectedRoute from './components/ProtectedRoute';
 
-function App() {
+export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-            <Route index element={<Dashboard />} />
-            <Route path="mahasiswa" element={<ProtectedRoute roles={['admin']}><MahasiswaList /></ProtectedRoute>} />
-            <Route path="mahasiswa/tambah" element={<ProtectedRoute roles={['admin']}><MahasiswaForm /></ProtectedRoute>} />
-            <Route path="mahasiswa/edit/:id" element={<ProtectedRoute roles={['admin']}><MahasiswaForm /></ProtectedRoute>} />
-            <Route path="perusahaan" element={<ProtectedRoute roles={['admin']}><PerusahaanList /></ProtectedRoute>} />
-            <Route path="perusahaan/tambah" element={<ProtectedRoute roles={['admin']}><PerusahaanForm /></ProtectedRoute>} />
-            <Route path="perusahaan/edit/:id" element={<ProtectedRoute roles={['admin']}><PerusahaanForm /></ProtectedRoute>} />
-            <Route path="laporan" element={<LaporanList />} />
-            <Route path="profile" element={<Profile />} />
-          </Route>
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/mahasiswa" element={<ProtectedRoute adminOnly><MahasiswaList /></ProtectedRoute>} />
+          <Route path="/mahasiswa/tambah" element={<ProtectedRoute adminOnly><MahasiswaForm /></ProtectedRoute>} />
+          <Route path="/mahasiswa/edit/:id" element={<ProtectedRoute adminOnly><MahasiswaForm /></ProtectedRoute>} />
+          <Route path="/perusahaan" element={<ProtectedRoute adminOnly><PerusahaanList /></ProtectedRoute>} />
+          <Route path="/perusahaan/tambah" element={<ProtectedRoute adminOnly><PerusahaanForm /></ProtectedRoute>} />
+          <Route path="/perusahaan/edit/:id" element={<ProtectedRoute adminOnly><PerusahaanForm /></ProtectedRoute>} />
+          <Route path="/laporan" element={<ProtectedRoute><LaporanList /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
   );
 }
-
-export default App;
